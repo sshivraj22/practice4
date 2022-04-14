@@ -1,0 +1,46 @@
+---
+title: 'Homework #9'
+author: "Sundar Shivraj"
+date: "3/9/2022"
+output: html_document
+---
+
+For this project, I worked with Alex Maldonado
+
+Link to Repository: https://github.com/sshivraj22/practice4/upload/main
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(tidyverse)
+av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+av1 = av %>% gather(key = time, value = death, c(11, 13, 15, 17, 19))
+av1 = av1 %>% mutate(time = parse_number(time)) %>% select(Name.Alias, time, death)
+head(av1)
+```
+
+```{r}
+av2 = av %>% gather(key = time, value = return, c(12, 14, 16, 18, 20))
+av2 = av2 %>% mutate(time = parse_number(time)) %>% select(Name.Alias, time, return)
+head(av2)
+av1$return = av2[, 3]
+head(av1)
+```
+
+```{r}
+av1 %>% group_by(time) %>% 
+  summarise(total.num = n(),
+            real.death = sum(death == "YES"),
+            fake.death = sum(death == "NO"),
+            missing = sum(death == ""))
+
+av1 %>% filter(time == 1, death == "YES") %>% 
+  summarise(total.num = n(),
+            real.return = sum(return == "YES"), 
+            fake.return = sum(return == "NO"), 
+            missing = sum(return == ""))
+```
